@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StatusBar, Image, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import axios from 'axios';
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState([])
   const [data_room, setData_room] = useState([])
-  console.log(`data`, data)
   useEffect(() => {
     axios.get('https://severforappmess.herokuapp.com/api/user')
       .then(function (response) {
@@ -20,7 +19,7 @@ const HomeScreen = ({ navigation }) => {
       .then(function () {
         // always executed
       });
-      axios.get('http://localhost:5000/api/room/get_room')
+      axios.get('https://severforappmess.herokuapp.com/api/room/get_room')
       .then(function (response) {
         // handle success
         console.log(response.data.message);
@@ -34,25 +33,60 @@ const HomeScreen = ({ navigation }) => {
         // always executed
       });
   }, [])
+
+  const createRoom = (item) =>{
+    navigation.navigate("chat", {user: item})
+    axios.post('https://severforappmess.herokuapp.com/api/room/create', {
+      avatar: item.item.avatar,
+      friend: item.item.username,
+      name_room: item.item.username
+    })
+    .then(function (response) {
+      console.log( "hello", response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  const intoRoom = (item) =>{
+    navigation.navigate("chat", {user: item})
+    axios.post('https://severforappmess.herokuapp.com/api/room/update_room', {
+      avatar: item.item.avatar,
+      friend: item.item.username,
+      name_room: item.item.username,
+      createAt : item.item.createAt,
+      messages_room: item.item.messages_room
+    })
+    .then(function (response) {
+      console.log( "hello", response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+
   const ItemAvatar = (item) => {
     // console.log(`item`, item)
     return (
-      <View style={{ height: 60, width: 60, padding: 4 }}>
+      <TouchableOpacity style={{ height: 60, width: 60, padding: 4 }} onPress = {() => {createRoom(item)}}>
         <Image source={{ uri: item.item.avatar }} style={{ height: 48, width: 48, borderRadius: 50 }} />
         <Text numberOfLines={1}>{item.item.username}</Text>
-      </View>
+      </TouchableOpacity>
     )
   }
   const ItemMess = (item) => {
     console.log(`item`, item)
     return (
-      <View style={{ flexDirection: "row",  alignItems: "center" }}>
+      <TouchableOpacity onPress ={() => {intoRoom(item)} }
+      style={{ flexDirection: "row",  alignItems: "center" , paddingHorizontal: 16, paddingVertical: 8}}>
         <Image source={{ uri: item.item.avatar_room }} style={{ height: 48, width: 48, borderRadius: 50 }} />
         <View style = {{marginLeft: 8}}>
-          <Text>{item.item.name_room}</Text>
-          <Text>{item.item.name_room}</Text>
+          <Text numberOfLines={1}>{item.item.name_room}</Text>
+          <Text numberOfLines={1}>{item.item.name_room}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
   const { colors } = useTheme();
@@ -66,11 +100,11 @@ const HomeScreen = ({ navigation }) => {
           <ItemAvatar item={item} />
         ))}
       </ScrollView>
-     <View style = {styles.item_mess}>
+     <ScrollView style = {styles.item_mess}>
      {data_room?.map((item) =>(
         <ItemMess item = {item} />
       ))}
-     </View>
+     </ScrollView>
       <View>
 
       </View>

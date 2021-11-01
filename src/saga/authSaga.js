@@ -14,7 +14,6 @@ function* requestLogin(action) {
     console.log(`action`, action)
     const { username, password } = action.payload
     try {
-        console.log(`123`, 123)
         const response = yield axios.post('https://severforappmess.herokuapp.com/api/auth/login', {
             username ,
             password
@@ -26,7 +25,7 @@ function* requestLogin(action) {
             yield put(authActions.loginSuccess(response.data))
         }
     } catch (error) {
-
+        
     }
 
 }
@@ -38,7 +37,7 @@ function* requestRegister(action) {
     const { username, password } = action.payload
     try {
         console.log(`123`, 123)
-        const response = yield axios.post('http://localhost:5000/api/auth/register', {
+        const response = yield axios.post('https://severforappmess.herokuapp.com/api/auth/register', {
             username ,
             password
         });

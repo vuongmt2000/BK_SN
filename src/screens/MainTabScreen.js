@@ -9,6 +9,7 @@ import HomeScreen from './HomeScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
+import ChatScreen from './ChatScreen';
 
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
@@ -79,12 +80,14 @@ const HomeStackScreen = ({navigation}) => (
         fontWeight: 'bold'
         }
     }}>
+
         <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Đoạn chat',
         headerLeft: () => (
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
         }} />
+        <HomeStack.Screen name = "chat" component = {ChatScreen} options = {{headerShown: false}}/>
 </HomeStack.Navigator>
 );
 
